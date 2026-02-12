@@ -5,6 +5,7 @@ import cors from "cors";
 import path from "path";
 import { serve } from "inngest/express";
 import { inngest, functions } from "./lib/inngest.js";
+import { createTestChannel } from "./lib/stream.js"; // ⭐ ADDED
 
 const app = express();
 app.use(express.json());
@@ -18,10 +19,12 @@ app.get("/health", (req, res) => {
     res.status(200).json({ message: "Server is running" });
 });
 
-
 const startServer = async () => {
     try {
         await connectDB();
+
+        await createTestChannel(); // ⭐ ADDED
+
         app.listen(ENV.PORT, () => {
             console.log("Server is running on port ", ENV.PORT);
         });
@@ -29,4 +32,5 @@ const startServer = async () => {
         console.error("Error connecting to MongoDB:", error);
     }
 };
+
 startServer();
